@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@thirdweb-dev/chains": "^0.1.43",
+    "@thirdweb-dev/react": "^3.14.31",
     "autoprefixer": "10.4.14",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",

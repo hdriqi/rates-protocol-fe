@@ -1,113 +1,82 @@
-import Image from 'next/image'
+import Nav from "../components/Nav"
+import Wallet from "../components/wallet"
+import Web3Provider from "../components/web3provider"
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="min-h-screen">
+      <Web3Provider>
+        <Wallet />
+        <div className="max-w-6xl mx-auto">
+          <Nav />
         </div>
-      </div>
+        <div className="mt-32 max-w-6xl mx-auto p-4">
+          <p className="max-w-4xl text-lg">
+            Humanity has discovered a revolutionary material capable of doing Room-Temperature Superconductor ($RTS), also referred to as Rates.
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+            Venture to a newfound planet, collect extraordinary resources, and usher in a new age of technological marvels.
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+            Your journey begins now!</p>
+        </div>
+        <div className="max-w-6xl mx-auto p-4">
+          <p className="text-3xl">Explore Planet</p>
+          <div className="flex -mx-4 mt-4">
+            {[1, 2, 3, 4].map((v) => {
+              return (
+                <div className="px-4" key={v}>
+                  <img alt={`planet #${v}`} src={`http://localhost:8000/${v}`} />
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto p-4">
+          <div className="flex items-center">
+            <div className="w-4/5">
+              <p className="text-3xl font-bold">Rates ($RTS)</p>
+              <p className="mt-8">Uncover more than resources – uncover new worlds! Through the art of planet mining, you'll excavate the mysteries of uncharted territories, revealing planets that hold the elusive Room-Temperature Superconductor, Rates.</p>
+              <p className="mt-2">Planet Mining is based on ERC-918: Mineable Token Standard that uses Proof of Work algorithm in order to control the distribution rate of $RTS via Planet NFT</p>
+            </div>
+            <div className="w-1/5 p-4">
+              <svg width="100%" height="100%" viewBox="0 0 346 471" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M241.5 56L332 212.75H151L241.5 56Z" fill="url(#paint0_linear_42_16)" />
+                <path d="M241.5 369.5L151 212.75H332L241.5 369.5Z" fill="url(#paint1_linear_42_16)" />
+                <path d="M136.5 0L227 156.75H46.0003L136.5 0Z" fill="url(#paint2_linear_42_16)" />
+                <path d="M136.5 313.5L46.0003 156.75H227L136.5 313.5Z" fill="url(#paint3_linear_42_16)" />
+                <path d="M107 149.5L199.665 310H14.3353L107 149.5Z" fill="url(#paint4_linear_42_16)" />
+                <path d="M107 470.5L14.3353 310H199.665L107 470.5Z" fill="url(#paint5_linear_42_16)" />
+                <defs>
+                  <linearGradient id="paint0_linear_42_16" x1="241.5" y1="56" x2="241.5" y2="265" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_42_16" x1="241.5" y1="369.5" x2="241.5" y2="160.5" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_42_16" x1="136.5" y1="0" x2="136.5" y2="209" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="paint3_linear_42_16" x1="136.5" y1="313.5" x2="136.5" y2="104.5" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="paint4_linear_42_16" x1="107" y1="149.5" x2="107" y2="363.5" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="paint5_linear_42_16" x1="107" y1="470.5" x2="107" y2="256.5" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D9D9D9" />
+                    <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+              </svg>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+            </div>
+          </div>
+        </div>
+      </Web3Provider>
     </main>
   )
 }
