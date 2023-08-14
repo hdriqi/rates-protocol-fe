@@ -1,3 +1,5 @@
+import Wallet from "../components/Wallet"
+import Web3Provider from "../components/web3provider"
 import './globals.css'
 import { Inconsolata } from 'next/font/google'
 
@@ -10,8 +12,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inconsolata.className}>{children}</body>
-    </html>
+    <Web3Provider>
+      <Wallet />
+      <html lang="en">
+        <body className={inconsolata.className}>{children}</body>
+      </html>
+    </Web3Provider>
   )
 }
