@@ -9,10 +9,15 @@ export default function Nav() {
   return (
     <div className="flex justify-between items-center p-4">
       <div className="w-2/3"><p className="text-3xl">Rates Protocol</p></div>
-      <div className="w-1/3 flex justify-between items-center">
+      {/* desktop nav */}
+      <div className="w-1/3 hidden lg:flex justify-between items-center">
         <Link href="/planet-mining" className="text-2xl">Explore</Link>
         <Link href="/planet-mining" className="text-2xl">Mining</Link>
         <ConnectWallet />
+      </div>
+      {/* mobile nav */}
+      <div className="w-1/3 flex lg:hidden justify-end">
+        <p className="text-3xl">MENU</p>
       </div>
     </div>
   )
