@@ -1,10 +1,11 @@
+import Link from "next/link"
 import Footer from "../components/Footer"
 import Nav from "../components/Nav"
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <div className="max-w-6xl mx-auto absolute inset-0">
+      <div className="max-w-6xl mx-auto absolute left-0 right-0">
         <Nav />
       </div>
       <div className="absolute -z-10 w-full bg-cover bg-center h-[50vh] image-rendering" style={{
@@ -19,7 +20,16 @@ export default function Home() {
           Your journey begins now!</p>
       </div>
       <div className="max-w-6xl mx-auto p-4">
-        <p className="text-3xl">Explore Planet</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-3xl">Explore Planet</p>
+          </div>
+          <div>
+            <Link href="/explore" className="opacity-60 hover:opacity-100 text-xl font-semibold">
+              MORE
+            </Link>
+          </div>
+        </div>
         <div className="flex flex-wrap -mx-4 mt-4">
           {[1, 2, 3, 4].map((v) => {
             return (
@@ -34,7 +44,7 @@ export default function Home() {
         <div className="flex flex-wrap items-center">
           <div className="w-full md:w-3/5">
             <p className="text-3xl font-bold">⯄ Rates ($RTS)</p>
-            <p className="mt-8">Uncover more than resources – uncover new worlds! Through the art of planet mining, you'll excavate the mysteries of uncharted territories, revealing planets that hold the elusive Room-Temperature Superconductor, Rates.</p>
+            <p className="mt-8">Uncover more than resources – uncover new worlds! Through the art of planet mining, you can excavate the mysteries of uncharted territories, revealing planets that hold the elusive Room-Temperature Superconductor, Rates.</p>
             <p className="mt-2">Planet Mining is based on ERC-918: Mineable Token Standard that uses Proof of Work algorithm in order to control the distribution rate of $RTS via Planet NFT</p>
             <div className="flex mt-16 -mx-4">
               <button className="bg-white text-black px-4 py-2 font-bold text-lg mx-4">Planet Mining</button>

@@ -15,6 +15,7 @@ export default function RootLayout({ children }) {
     <Web3Provider>
       <Wallet />
       <html lang="en">
+        <link rel="icon" href="/favicon.svg" sizes="any" />
         <body className={inconsolata.className}>{children}</body>
       </html>
     </Web3Provider>

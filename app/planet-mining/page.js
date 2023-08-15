@@ -4,7 +4,7 @@ import Nav from "../../components/Nav"
 const MiningPage = () => {
   return (
     <main className="min-h-screen">
-      <div className="max-w-6xl mx-auto absolute z-10 inset-0">
+      <div className="max-w-6xl mx-auto absolute z-10 left-0 right-0">
         <Nav />
       </div>
       <div className="absolute -z-10 w-full bg-cover bg-center h-[50vh] image-rendering" style={{
@@ -48,7 +48,6 @@ const MiningPage = () => {
           <div className="w-full">
             <p className="text-3xl font-bold">PLANET</p>
             <p className="mt-8">From resource extraction to cutting-edge processing centers, your planet can be the hub of universe. Shape policies including taxes and visa regulations. Embrace the challenge of balancing resources and strategy while unleashing the potential of your planet to soar among the stars.</p>
-            {/* desktop */}
             <div className="-mx-4">
               <div className="flex flex-wrap">
                 <div className="flex flex-shrink-0 w-full lg:w-1/2 px-4 mt-8">
