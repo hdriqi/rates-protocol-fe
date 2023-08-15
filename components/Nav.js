@@ -20,8 +20,8 @@ export default function Nav() {
         </div>
         {/* desktop nav */}
         <div className="hidden lg:flex justify-between items-center -mx-4">
-          <Link href="/explore" className="text-2xl px-4">Explore</Link>
-          <Link href="/planet-mining" className="text-2xl px-4">Mining</Link>
+          <Link href="/explore" className="text-2xl font-bold px-4">Explore</Link>
+          <Link href="/planet-mining" className="text-2xl font-bold px-4">Mining</Link>
           <div className="px-4">
             <div className="w-[12.5rem]">
               <ConnectWallet style={{

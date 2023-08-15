@@ -13,10 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <Web3Provider>
-      <Wallet />
       <html lang="en">
         <link rel="icon" href="/favicon.svg" sizes="any" />
-        <body className={inconsolata.className}>{children}</body>
+
+        <body className={inconsolata.className}>
+          <Wallet />
+          {children}
+        </body>
       </html>
     </Web3Provider>
   )

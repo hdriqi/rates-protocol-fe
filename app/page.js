@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Footer from "../components/Footer"
 import Nav from "../components/Nav"
+import Image from "next/image"
 
 export default function Home() {
   return (
@@ -34,7 +35,7 @@ export default function Home() {
           {[1, 2, 3, 4].map((v) => {
             return (
               <div className="w-1/2 md:w-1/2 lg:w-1/4 p-4 " key={v}>
-                <img className="border-2 border-gray-800 w-full" alt={`planet #${v}`} src={`http://localhost:8000/${v}`} />
+                <Image className="border-2 border-gray-800 w-full" alt={`planet #${v}`} src={`http://localhost:8000/${v}`} width="333" height="500" />
               </div>
             )
           })}
