@@ -1,8 +1,61 @@
+'use client'
+
 import Image from "next/image"
 import Footer from "../../components/Footer"
 import Nav from "../../components/Nav"
+import { useAddress } from "@thirdweb-dev/react"
+import { useEffect } from "react"
+
+const diff = 5
+
+let plusWorker = null
 
 const MiningPage = () => {
+  const address = useAddress()
+
+  // create modal that show calculation and stop button
+  useEffect(() => {
+    // return () => {
+    //   plusWorker && plusWorker.terminate()
+    // }
+  }, [])
+
+  const startMining = () => {
+    if (plusWorker) {
+      return
+    }
+
+    plusWorker = new Worker(new URL('../../workers/miner', import.meta.url))
+
+    plusWorker.onmessage = (event) => {
+      const [digest, nonce] = event.data
+      const solution = parseInt(digest.substring(2, 2 + diff), 16)
+      if (solution != 0) {
+        setTimeout(() => {
+          mining()
+        }, 0)
+      }
+      else {
+        alert(`found new block, challenge: ${123} | nonce: ${nonce}`)
+        stopMining()
+      }
+    }
+
+    mining()
+  }
+
+  const stopMining = () => {
+    if (plusWorker) {
+      plusWorker.terminate()
+      plusWorker = null
+    }
+  }
+
+  const mining = () => {
+    // const digest = miner(123, address)
+    plusWorker.postMessage([123, address])
+  }
+
   return (
     <main className="min-h-screen">
       <div className="max-w-6xl mx-auto absolute z-10 left-0 right-0">
@@ -21,7 +74,10 @@ const MiningPage = () => {
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex -mx-4">
           <div className="px-4">
-            <button className="bg-white text-black px-4 py-2 font-bold text-lg">Start Mining</button>
+            <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => startMining()}>Start Mining</button>
+          </div>
+          <div className="px-4">
+            <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => stopMining()}>Stop Mining</button>
           </div>
           <div className="px-4">
             <button className="bg-white text-black px-4 py-2 font-bold text-lg">Upgrade Mining</button>
