@@ -3,8 +3,9 @@
 import Image from "next/image"
 import Footer from "../../components/Footer"
 import Nav from "../../components/Nav"
-import { useAddress } from "@thirdweb-dev/react"
-import { useEffect } from "react"
+import { useAddress, useContract } from "@thirdweb-dev/react"
+import { useCallback, useEffect, useState } from "react"
+import * as ssu from "short-scale-units"
 
 const diff = 5
 
@@ -12,6 +13,8 @@ let plusWorker = null
 
 const MiningPage = () => {
   const address = useAddress()
+  const { contract, isLoading } = useContract('0xF72b546814a88DF07C0Ee772393827cd1310FC74')
+  const [miningMeta, setMiningMeta] = useState({})
 
   // create modal that show calculation and stop button
   useEffect(() => {
@@ -19,6 +22,25 @@ const MiningPage = () => {
     //   plusWorker && plusWorker.terminate()
     // }
   }, [])
+
+  const getData = async () => {
+    const challengeNumber = await contract.call('getChallengeNumber')
+    const miningDifficulty = await contract.call('getMiningDifficulty')
+
+    setMiningMeta({
+      miningDifficulty: `${ssu.trimNumber(miningDifficulty.toString())} ${ssu.trimName(ssu.unitNameFromNumber(miningDifficulty.toString()))} [10**${ssu.getUnitPower(miningDifficulty.toString())}]`,
+      challengeNumber: challengeNumber,
+      planetMinted: 100,
+    })
+  }
+
+  useEffect(() => {
+    if (!isLoading) {
+      getData()
+    }
+  }, [isLoading])
+
+
 
   const startMining = () => {
     if (plusWorker) {
@@ -66,9 +88,18 @@ const MiningPage = () => {
       }}></div>
       <div className="max-w-6xl mx-auto p-4 pt-[50vh] relative">
         <div className="flex justify-between text-center">
-          <p className="max-w-4xl text-lg">Mining Difficulty</p>
-          <p className="max-w-4xl text-lg">Current Challenge</p>
-          <p className="max-w-4xl text-lg">Planet Minted</p>
+          <div>
+            <p className="font-bold uppercase max-w-4xl text-lg">Mining Difficulty ⓘ</p>
+            <p className="max-w-4xl text-lg">{miningMeta.miningDifficulty}</p>
+          </div>
+          <div>
+            <p className="max-w-4xl text-lg">Current Challenge</p>
+            <p className="max-w-4xl text-lg">{miningMeta.challengeNumber}</p>
+          </div>
+          <div>
+            <p className="max-w-4xl text-lg">Planet Minted</p>
+            <p className="max-w-4xl text-lg">{miningMeta.planetMinted}</p>
+          </div>
         </div>
       </div>
       <div className="max-w-6xl mx-auto p-4">
@@ -80,7 +111,7 @@ const MiningPage = () => {
             <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => stopMining()}>Stop Mining</button>
           </div>
           <div className="px-4">
-            <button className="bg-white text-black px-4 py-2 font-bold text-lg">Upgrade Mining</button>
+            <button className="bg-white text-black px-4 py-2 font-bold text-lg">Upgrade Rig</button>
           </div>
         </div>
       </div>
@@ -90,9 +121,10 @@ const MiningPage = () => {
             <p className="text-3xl font-bold mt-8">MINING</p>
             <p className="mt-4">Planet Mining is based on ERC-918: Mineable Token Standard that uses Proof of Work algorithm in order to control the distribution rate of $RTS via Planet NFT</p>
             <p className="mt-2">Planet is minted as NFT and tradable on any NFT marketplace, each planet is unique and randomly generated on-chain with various resources available for players to gather</p>
+            <p className="mt-2">Upgrade your mining machine to discover planet with better resources</p>
             <div className="flex mt-16 -mx-4">
-              <button className="bg-white text-black px-4 py-2 font-bold text-lg mx-4">Planet Mining</button>
-              <button className="bg-white text-black px-4 py-2 font-bold text-lg mx-4 bg-opacity-50 cursor-not-allowed">Rates Expedition (SOON)</button>
+              <div>⦾ Mining Machine Level: 0</div>
+              <button className="bg-white text-black px-4 py-2 font-bold text-lg mx-4">Upgrade Rig</button>
             </div>
           </div>
           <div className="w-full md:w-2/5 pl-0 md:pl-8 order-1 md:order-2">

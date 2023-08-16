@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.svg" sizes="any" />
 
         <body className={inconsolata.className}>
-          <Wallet />
+          {/* <Wallet /> */}
           <NotificationProvider>
             <div>
               <MiningNotification />
