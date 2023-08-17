@@ -5,10 +5,17 @@ import {
 } from "@thirdweb-dev/react"
 import Link from "next/link"
 import { Squash as Hamburger } from 'hamburger-react'
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 
 export default function Nav() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setShowMobileMenu(false)
+  }, [pathname])
 
   return (
     <div className="p-4">

@@ -8,8 +8,6 @@ import {
 } from "@thirdweb-dev/react"
 import { Base, BaseGoerli } from "@thirdweb-dev/chains"
 
-console.log(BaseGoerli)
-
 export default function Web3Provider({ children }) {
   return (
     <ThirdwebProvider

@@ -2,6 +2,7 @@ import Link from "next/link"
 import Footer from "../components/Footer"
 import Nav from "../components/Nav"
 import Image from "next/image"
+import HomePlanet from "../components/HomePlanet"
 
 export default function Home() {
   return (
@@ -20,27 +21,7 @@ export default function Home() {
 
           Your journey begins now!</p>
       </div>
-      <div className="max-w-6xl mx-auto p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-3xl">Explore Planet</p>
-          </div>
-          <div>
-            <Link href="/explore" className="opacity-60 hover:opacity-100 text-xl font-semibold">
-              MORE
-            </Link>
-          </div>
-        </div>
-        <div className="flex flex-wrap -mx-4 mt-4">
-          {[1, 2, 3, 4].map((v) => {
-            return (
-              <div className="w-1/2 md:w-1/2 lg:w-1/4 p-4 " key={v}>
-                <Image className="border-2 border-gray-800 w-full" alt={`planet #${v}`} src={`http://localhost:8000/${v}`} width="333" height="500" />
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      <HomePlanet />
       <div className="max-w-6xl mx-auto p-4 my-32">
         <div className="flex flex-wrap items-center">
           <div className="w-full md:w-3/5">

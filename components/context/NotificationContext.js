@@ -51,11 +51,9 @@ export const NotificationProvider = ({ children }) => {
           dismissToast
         }}
       >
-        <div
-          className="relative max-w-6xl mx-auto"
-        >
+        <div className="relative max-w-6xl mx-auto">
           <div className="absolute right-0 w-96">
-            <div className="fixed top-12 z-50 p-4 w-96">
+            <div className={`fixed top-12 p-4 w-96 ${showToast.type !== null ? 'z-50' : '-z-10'}`}>
               <CSSTransition
                 in={showToast.type !== null}
                 timeout={{
@@ -73,19 +71,12 @@ export const NotificationProvider = ({ children }) => {
                 <div ref={nodeRef}>
                   <div>
                     {showToast.element}
-                    {/* <div className="flex items-center justify-between bg-gray-800 border border-gray-800 w-full p-4">
-                      <div>
-                        
-                      </div>
-                      
-                    </div> */}
                   </div>
                 </div>
               </CSSTransition>
             </div>
           </div>
         </div>
-
         {children}
       </NotificationContext.Provider >
     </>
