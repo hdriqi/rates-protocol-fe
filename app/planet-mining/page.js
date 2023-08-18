@@ -99,7 +99,7 @@ const MiningPage = () => {
 
   const startMining = () => {
     if (!address || !contract) {
-      alert('please connect wallet')
+      alert('Please connect your wallet')
       return
     }
     plusWorker = new Worker(new URL('../../workers/miner', import.meta.url))
@@ -145,6 +145,14 @@ const MiningPage = () => {
       plusWorker.terminate()
       plusWorker = null
     }
+  }
+
+  const upgradeMachine = () => {
+    if (!address) {
+      alert('Please connect your wallet')
+      return
+    }
+    onOpen()
   }
 
   return (
@@ -220,7 +228,7 @@ const MiningPage = () => {
             <p className="mt-2">Upgrade your mining machine to discover planet with better resources</p>
             <div className="flex items-center mt-16">
               <div className="border-2 border-white px-4 py-2 text-lg font-bold">⦾ Mining Machine Level: {miningRigForAddress}</div>
-              <button className="border-2 border-white bg-white text-black px-4 py-2 font-bold text-lg" onClick={onOpen}>
+              <button className="border-2 border-white bg-white text-black px-4 py-2 font-bold text-lg" onClick={upgradeMachine}>
                 Upgrade +
               </button>
             </div>
