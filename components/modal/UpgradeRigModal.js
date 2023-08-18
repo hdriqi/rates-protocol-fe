@@ -1,18 +1,20 @@
 'use client'
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Skeleton } from '@nextui-org/react'
-import { useAddress, useContract, useContractRead } from '@thirdweb-dev/react'
+import { useAddress, useBalance, useContract, useContractRead } from '@thirdweb-dev/react'
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../constants/common'
 import { useEffect, useState } from 'react'
 import IconMinus from '../icons/IconMinus'
 import IconPlus from '../icons/IconPlus'
 import { formatUnits } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 
 const UpgradeRigModal = ({ isOpen, onClose }) => {
   const [level, setLevel] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 
   const address = useAddress()
+  const { data: balance } = useBalance()
   const { contract } = useContract(CONTRACT_ADDRESS, CONTRACT_ABI)
   const { data: miningRigUpgradePrice } = useContractRead(contract, 'miningRigUpgradePrice')
   const { data: maximumRigLevel } = useContractRead(contract, 'maximumRigLevel')
@@ -72,6 +74,11 @@ const UpgradeRigModal = ({ isOpen, onClose }) => {
           </div>
           <div />
           <div>
+
+            <div className="flex items-center justify-between text-sm">
+              <p>Available Balance</p>
+              <p className={`${balance?.value.lte(BigNumber.from(miningRigUpgradePrice?.mul(level))) && 'text-red-300'}`}>{parseFloat(balance?.displayValue).toPrecision(3)} {balance?.symbol}</p>
+            </div>
             <div className="flex items-center justify-between text-sm">
               <p>Total Price</p>
               <p>{miningRigUpgradePrice ? formatUnits(miningRigUpgradePrice?.mul(level), 18) : 0} ETH</p>
@@ -85,7 +92,7 @@ const UpgradeRigModal = ({ isOpen, onClose }) => {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={isMinimumLevel} isLoading={isLoading} color="danger" radius="none" onPress={onUpgradeRig}>
+          <Button isDisabled={isMinimumLevel || balance?.value.lte(BigNumber.from(miningRigUpgradePrice?.mul(level)))} isLoading={isLoading} color="danger" radius="none" onPress={onUpgradeRig}>
             Upgrade
           </Button>
         </ModalFooter>

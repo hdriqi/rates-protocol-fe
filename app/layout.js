@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 
         <body className={inconsolata.className}>
           <Providers>
-            {process.env.NODE_ENV === 'production' && <Wallet />}
+            {process.env.APP_ENV === 'production' && <Wallet />}
             <Global />
             <NotificationProvider>
               <MiningNotification />

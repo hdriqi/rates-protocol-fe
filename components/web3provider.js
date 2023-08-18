@@ -12,7 +12,7 @@ export default function Web3Provider({ children }) {
   return (
     <ThirdwebProvider
       clientId={process.env.NEXT_PUBLIC_THIRD_WEB_CLIENT_ID}
-      activeChain={process.env.NODE_ENV === 'development' ? BaseGoerli : Base}
+      activeChain={process.env.APP_ENV === 'development' ? BaseGoerli : Base}
       supportedWallets={[
         metamaskWallet(),
         coinbaseWallet(),
