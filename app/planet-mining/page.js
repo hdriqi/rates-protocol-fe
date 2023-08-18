@@ -67,18 +67,13 @@ const MiningPage = () => {
 
         stopMining()
       }
-      else {
-        setTimeout(() => {
-          mining()
-        }, 0)
-      }
     }
 
     mining()
   }
 
   const mining = () => {
-    plusWorker.postMessage([miningMeta.challengeNumber, address])
+    plusWorker.postMessage([miningMeta.challengeNumber, address, miningMeta.targetDifficulty])
   }
 
   const stopMining = () => {
