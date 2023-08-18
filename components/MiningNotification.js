@@ -4,10 +4,11 @@ import React, { useEffect } from 'react'
 import { truncateAddr } from "../utils/common"
 import { useNotificationContext } from "./context/NotificationContext"
 import { useContract } from "@thirdweb-dev/react"
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../constants/common'
 
 const Modal = ({ }) => {
   const { setShowToast, setShowToastWithTimeout, dismissToast } = useNotificationContext()
-  const { contract, isLoading } = useContract('0xF72b546814a88DF07C0Ee772393827cd1310FC74')
+  const { contract, isLoading } = useContract(CONTRACT_ADDRESS, CONTRACT_ABI)
 
   useEffect(() => {
     // listen to smart contract events

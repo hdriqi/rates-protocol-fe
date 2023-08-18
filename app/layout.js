@@ -1,11 +1,12 @@
-import MiningNotification from "../components/MiningNotification"
-import Wallet from "../components/Wallet"
-import { Global } from "../components/Global"
-import { NotificationProvider } from "../components/context/NotificationContext"
-import Web3Provider from "../components/web3provider"
+import MiningNotification from '../components/MiningNotification'
+import Wallet from '../components/Wallet'
+import { Global } from '../components/Global'
+import { NotificationProvider } from '../components/context/NotificationContext'
+import Web3Provider from '../components/web3provider'
 import './globals.css'
 import 'animate.css'
 import { Inconsolata } from 'next/font/google'
+import { Providers } from './providers'
 
 const inconsolata = Inconsolata({ subsets: ['latin'] })
 
@@ -21,14 +22,14 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.svg" sizes="any" />
 
         <body className={inconsolata.className}>
-          {/* <Wallet /> */}
-          <Global />
-          <NotificationProvider>
-            <div>
+          <Providers>
+            {/* <Wallet /> */}
+            <Global />
+            <NotificationProvider>
               <MiningNotification />
               {children}
-            </div>
-          </NotificationProvider>
+            </NotificationProvider>
+          </Providers>
         </body>
       </html>
     </Web3Provider>
