@@ -6,18 +6,12 @@ import { useNotificationContext } from "./context/NotificationContext"
 import { useContract } from "@thirdweb-dev/react"
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../constants/common'
 
-const Modal = ({ }) => {
-  const { setShowToast, setShowToastWithTimeout, dismissToast } = useNotificationContext()
+const Modal = () => {
+  const { setShowToastWithTimeout, dismissToast } = useNotificationContext()
   const { contract, isLoading } = useContract(CONTRACT_ADDRESS, CONTRACT_ABI)
 
   useEffect(() => {
     // listen to smart contract events
-    // setInterval(() => {
-    //   setShowToastWithTimeout({
-    //     message: 'mantap',
-    //     type: 'success'
-    //   }, 5000)
-    // }, 8000)
     if (!isLoading) {
       contract.events.addEventListener('Transfer', (event) => {
         console.log(event.eventName)
@@ -49,16 +43,6 @@ const Modal = ({ }) => {
       })
     }
   }, [isLoading])
-
-  const getData = async () => {
-    // console.log(await contract.call('getChallengeNumber'))
-    const events = await contract.events.getAllEvents({
-      fromBlock: 8499191,
-      toBlock: 'latest',
-      order: "desc",
-    })
-    console.log(events)
-  }
 
   return (
     <div></div>

@@ -1,10 +1,8 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import {
   createContext,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -18,7 +16,6 @@ const NotificationContext = createContext({
 })
 
 export const NotificationProvider = ({ children }) => {
-  const pathname = usePathname()
   const nodeRef = useRef(null)
   const timeoutRef = useRef()
 

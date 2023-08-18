@@ -11,7 +11,6 @@ import { truncateAddr } from '../../utils/common'
 import UpgradeRigModal from '../../components/modal/UpgradeRigModal'
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../constants/common'
 import { Skeleton, useDisclosure } from '@nextui-org/react'
-import IconPlus from '../../components/icons/IconPlus'
 
 let plusWorker = null
 
