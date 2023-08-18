@@ -21,6 +21,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    domains: ["assets-testnet.ratesprotocol.com", "assets.ratesprotocol.com"]
   },
 }
 
