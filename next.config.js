@@ -9,9 +9,9 @@ const nextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'http',
-        hostname: 'api.testnet.ratesprotocol.com',
-        port: '80',
+        protocol: 'https',
+        hostname: 'assets.ratesprotocol.com',
+        port: '443',
         pathname: '/**',
       },
     ],
