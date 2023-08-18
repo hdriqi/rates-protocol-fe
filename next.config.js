@@ -14,6 +14,12 @@ const nextConfig = {
         port: '443',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'assets-testnet.ratesprotocol.com',
+        port: '443',
+        pathname: '/**',
+      },
     ],
   },
 }

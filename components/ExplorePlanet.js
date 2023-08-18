@@ -68,7 +68,7 @@ export default function ExplorePlanet() {
           return (
             <div className="w-1/2 md:w-1/2 lg:w-1/4 p-4" key={planet.nft_id}>
               <div className="border-2 border-gray-800 hover:border-gray-300 cursor-pointer transition-all duration-300">
-                <Image className="transition-opacity duration-300 hover:opacity-80 w-full" alt={`planet #${planet.nft_id}`} src={`${process.env.NEXT_PUBLIC_API_URL}/render/${planet.nft_id}`} width="333" height="500" />
+                <Image className="transition-opacity duration-300 hover:opacity-80 w-full" alt={`planet #${planet.nft_id}`} src={planet.image} width="333" height="500" />
               </div>
             </div>
           )
