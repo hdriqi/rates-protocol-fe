@@ -77,7 +77,7 @@ const UpgradeRigModal = ({ isOpen, onClose }) => {
 
             <div className="flex items-center justify-between text-sm">
               <p>Available Balance</p>
-              <p className={`${balance?.value.lte(BigNumber.from(miningRigUpgradePrice?.mul(level))) && 'text-red-300'}`}>{parseFloat(balance?.displayValue).toPrecision(3)} {balance?.symbol}</p>
+              <p className={`${balance?.value.lte(BigNumber.from(miningRigUpgradePrice?.mul(level) || 0)) && 'text-red-300'}`}>{parseFloat(balance?.displayValue).toPrecision(3)} {balance?.symbol}</p>
             </div>
             <div className="flex items-center justify-between text-sm">
               <p>Total Price</p>

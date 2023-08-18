@@ -11,13 +11,13 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'assets.ratesprotocol.com',
-        port: '443',
+        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'assets-testnet.ratesprotocol.com',
-        port: '443',
+        port: '',
         pathname: '/**',
       },
     ],
