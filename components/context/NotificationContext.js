@@ -9,7 +9,6 @@ import {
   useState,
 } from 'react'
 import { CSSTransition } from "react-transition-group"
-import { Tooltip } from 'react-tooltip'
 
 const NotificationContext = createContext({
   showToast: { message: null, type: null },

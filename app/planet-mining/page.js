@@ -3,22 +3,30 @@
 import Image from 'next/image'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
-import { useAddress, useContract } from '@thirdweb-dev/react'
+import { useAddress, useContract, useContractRead } from '@thirdweb-dev/react'
 import { useEffect, useState } from 'react'
 import * as ssu from 'short-scale-units'
 import { BigNumber } from 'ethers'
 import { truncateAddr } from '../../utils/common'
 import UpgradeRigModal from '../../components/modal/UpgradeRigModal'
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../constants/common'
-import { useDisclosure } from '@nextui-org/react'
+import { Skeleton, useDisclosure } from '@nextui-org/react'
+import IconPlus from '../../components/icons/IconPlus'
 
 let plusWorker = null
 
 const MiningPage = () => {
   const address = useAddress()
   const { contract, isLoading } = useContract(CONTRACT_ADDRESS, CONTRACT_ABI)
-  const [miningMeta, setMiningMeta] = useState({})
+  const { data: miningRigForAddress } = useContractRead(contract, 'miningRigForAddress', [address])
+
+  const [miningDifficulty, setMiningDifficulty] = useState(0)
+  const [targetDifficulty, setTargetDifficulty] = useState(0)
+  const [challengeNumber, setChallengeNumber] = useState(0)
+  const [planetMinted, setPlanetMinted] = useState(0)
+
   const [isMining, setIsMining] = useState(false)
+  const [hashRate, setHashRate] = useState(0)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   // stop mining when change page
@@ -29,6 +37,48 @@ const MiningPage = () => {
   }, [])
 
   useEffect(() => {
+    if (isMining && plusWorker) {
+      // restart plusWorker
+      plusWorker.terminate()
+      plusWorker = null
+      startMining()
+    }
+  }, [isMining, challengeNumber, targetDifficulty])
+
+  useEffect(() => {
+    let unsubscribe = null
+
+    if (!isLoading) {
+      unsubscribe = contract.events.listenToAllEvents(async (event) => {
+        console.log(event)
+        if (event.eventName === 'ChallengeNumberChange') {
+          // set new state
+          console.log('update challenge number')
+          setChallengeNumber(event.data.challengeNumber)
+        }
+
+        if (event.eventName === 'DifficultyChange') {
+          // set new state
+          console.log('update difficulty')
+          const maxTargetDifficulty = await contract.call('MAXIMUM_TARGET_DIFFICULTY')
+          setMiningDifficulty(maxTargetDifficulty.div(event.data.difficulty).toString())
+          setTargetDifficulty(event.data.difficulty)
+        }
+
+        if (event.eventName === 'Transfer' && parseInt(event.data.from) === 0) {
+          console.log('update planet minted')
+          const planetId = event.data.tokenId.toString()
+          setPlanetMinted(planetId)
+        }
+      })
+    }
+
+    return () => {
+      unsubscribe && unsubscribe()
+    }
+  }, [isLoading])
+
+  useEffect(() => {
     if (!isLoading) {
       getData()
     }
@@ -37,15 +87,15 @@ const MiningPage = () => {
   const getData = async () => {
     const challengeNumber = await contract.call('getChallengeNumber')
     const maxTargetDifficulty = await contract.call('MAXIMUM_TARGET_DIFFICULTY')
-    const miningDifficulty = await contract.call('getMiningDifficulty')
+    const currentDifficulty = await contract.call('getMiningDifficulty')
     const planetMinted = await contract.call('getPlanetMinted')
 
-    setMiningMeta({
-      miningDifficulty: maxTargetDifficulty.div(miningDifficulty).toString(),
-      targetDifficulty: miningDifficulty.toString(),
-      challengeNumber: challengeNumber,
-      planetMinted: planetMinted.toString(),
-    })
+    console.log(maxTargetDifficulty.div(currentDifficulty).toString())
+
+    setMiningDifficulty(maxTargetDifficulty.div(currentDifficulty).toString())
+    setTargetDifficulty(currentDifficulty.toString())
+    setChallengeNumber(challengeNumber)
+    setPlanetMinted(planetMinted.toString())
   }
 
   const startMining = () => {
@@ -53,29 +103,33 @@ const MiningPage = () => {
       alert('please connect wallet')
       return
     }
-    if (plusWorker) {
-      return
-    }
+    plusWorker = new Worker(new URL('../../workers/miner', import.meta.url))
     setIsMining(true)
 
-    plusWorker = new Worker(new URL('../../workers/miner', import.meta.url))
-
     plusWorker.onmessage = async (event) => {
-      const [digest, nonce] = event.data
-      if (BigNumber.from(digest).lt(BigNumber.from(miningMeta.targetDifficulty))) {
-        try {
-          const result = await contract.call('mint', [nonce, digest])
-          console.log(result)
-        } catch (err) {
-          console.log(err)
+      if (event.data[0] === 'solve') {
+        const digest = event.data[1]
+        const nonce = event.data[2]
+        if (BigNumber.from(digest).lt(BigNumber.from(targetDifficulty))) {
+          try {
+            const result = await contract.call('mint', [nonce, digest])
+            console.log(result)
+          } catch (err) {
+            console.log(err)
+          }
         }
-
-        stopMining()
+        else {
+          setTimeout(() => {
+            mining()
+          }, 0)
+        }
       }
-      else {
-        setTimeout(() => {
-          mining()
-        }, 0)
+      if (event.data[0] === 'counter') {
+        console.log('')
+        const hashGenerated = event.data[1]
+        const startTime = event.data[2]
+        const currentTime = new Date().getTime()
+        setHashRate(hashGenerated / ((currentTime - startTime) / 1000))
       }
     }
 
@@ -83,7 +137,7 @@ const MiningPage = () => {
   }
 
   const mining = () => {
-    plusWorker.postMessage([miningMeta.challengeNumber, address, miningMeta.targetDifficulty])
+    plusWorker.postMessage([challengeNumber, address, targetDifficulty])
   }
 
   const stopMining = () => {
@@ -109,51 +163,46 @@ const MiningPage = () => {
         <div className="max-w-2xl flex justify-between text-center">
           <div>
             <div className="flex items-center">
-              <p className="font-bold uppercase max-w-4xl text-lg pr-2">Mining Difficulty</p>
-              <div
-                data-tooltip-id="g-tooltip"
-                data-tooltip-content="Estimated number of hashes required to mine planet"
-                className="opacity-80 text-xs cursor-pointer font-bold"
-              >
-                ⓘ
-              </div>
+              <p className="font-bold uppercase  text-lg pr-2">Mining Difficulty</p>
             </div>
-            {miningMeta.miningDifficulty && (
-              <p className="max-w-4xl text-lg">{`${ssu.trimNumber(miningMeta.miningDifficulty)} ${miningMeta.miningDifficulty > 10000
-                  ? ssu.trimName(ssu.unitNameFromNumber(miningMeta.miningDifficulty))
-                  : ''
+            <Skeleton className="bg-gray-600" isLoaded={miningDifficulty}>
+              <p className=" text-lg">{`${ssu.trimNumber(miningDifficulty)} ${miningDifficulty > 10000
+                ? ssu.trimName(ssu.unitNameFromNumber(miningDifficulty))
+                : ''
                 }`}</p>
-            )}
+            </Skeleton>
           </div>
           <div>
-            <p className="font-bold uppercase max-w-4xl text-lg">Current Challenge</p>
-            <p className="max-w-4xl text-lg">{truncateAddr(miningMeta.challengeNumber || '0x', 6)}</p>
+            <p className="font-bold uppercase text-lg">Current Challenge</p>
+            <Skeleton className="bg-gray-600" isLoaded={challengeNumber}>
+              <p className=" text-lg">{truncateAddr(challengeNumber || '0x', 6)}</p>
+            </Skeleton>
           </div>
           <div>
-            <p className="font-bold uppercase max-w-4xl text-lg">Planet Minted</p>
-            <p className="max-w-4xl text-lg">{miningMeta.planetMinted}</p>
+            <p className="font-bold uppercase  text-lg">Planet Minted</p>
+            <Skeleton className="bg-gray-600" isLoaded={planetMinted}>
+              <p className=" text-lg">{planetMinted}</p>
+            </Skeleton>
           </div>
         </div>
       </div>
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex -mx-4">
-          {!isMining ? (
-            <div className="px-4">
-              <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={startMining}>
+          <div className="px-4 w-60">
+            {!isMining ? (
+              <button className="bg-white w-full text-black px-4 py-2 font-bold text-lg" onClick={startMining}>
                 Start Mining
               </button>
-            </div>
-          ) : (
-            <div className="px-4">
-              <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={stopMining}>
+            ) : (
+              <button className="bg-white w-full text-black px-4 py-2 font-bold text-lg" onClick={stopMining}>
                 Stop Mining
               </button>
+            )}
+          </div>
+          <div className="px-4 w-60">
+            <div className="border-2 px-4 py-2 font-bold text-lg">
+              Hash Rate: {hashRate.toPrecision(3)} H/s
             </div>
-          )}
-          <div className="px-4">
-            <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={onOpen}>
-              Upgrade Rig
-            </button>
           </div>
         </div>
       </div>
@@ -170,10 +219,10 @@ const MiningPage = () => {
               on-chain with various resources available for players to gather
             </p>
             <p className="mt-2">Upgrade your mining machine to discover planet with better resources</p>
-            <div className="flex mt-16 -mx-4">
-              <div>⦾ Mining Machine Level: 0</div>
-              <button className="bg-white text-black px-4 py-2 font-bold text-lg mx-4" onClick={onOpen}>
-                Upgrade Rig
+            <div className="flex items-center mt-16">
+              <div className="border-2 border-white px-4 py-2 text-lg font-bold">⦾ Mining Machine Level: {miningRigForAddress}</div>
+              <button className="border-2 border-white bg-white text-black px-4 py-2 font-bold text-lg" onClick={onOpen}>
+                Upgrade +
               </button>
             </div>
           </div>

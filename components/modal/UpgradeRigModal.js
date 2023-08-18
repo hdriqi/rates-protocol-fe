@@ -43,8 +43,8 @@ const UpgradeRigModal = ({ isOpen, onClose }) => {
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div>
-            <p>Upgrade Rig</p>
-            <p className="text-xs font-normal">Mining more by upgrading your rig.</p>
+            <p>Upgrade Machine</p>
+            <p className="mt-1 text-xs font-normal">Discover planet with more resources</p>
           </div>
         </ModalHeader>
         <ModalBody>
@@ -77,8 +77,8 @@ const UpgradeRigModal = ({ isOpen, onClose }) => {
               <p>{miningRigUpgradePrice ? formatUnits(miningRigUpgradePrice?.mul(level), 18) : 0} ETH</p>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <p>Percentage Increase</p>
-              <div>
+              <p>Resource Increase</p>
+              <div className={`${level > miningRigForAddress && 'text-green-300'}`}>
                 {miningRigPercentage ? `${miningRigPercentage}%` : level ? <Skeleton className="h-2.5 w-5" /> : '-'}
               </div>
             </div>

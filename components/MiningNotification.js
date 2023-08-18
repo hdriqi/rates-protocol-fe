@@ -19,13 +19,12 @@ const Modal = ({ }) => {
     //   }, 5000)
     // }, 8000)
     if (!isLoading) {
-      console.log('listening')
-      const unsubscribe = contract.events.listenToAllEvents((event) => {
+      contract.events.addEventListener('Transfer', (event) => {
         console.log(event.eventName)
         console.log(event.data)
         // planet mint event
         if (event.eventName === 'Transfer' && parseInt(event.data.from) === 0) {
-          const planetId = event.data.id.toString()
+          const planetId = event.data.tokenId.toString()
           const mintedBy = event.data.to
           setShowToastWithTimeout({
             message: `planetMinted`,
