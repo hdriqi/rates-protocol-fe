@@ -3,11 +3,11 @@
 import Image from "next/image"
 import Footer from "../../components/Footer"
 import Nav from "../../components/Nav"
-import { useAddress, useContract } from "@thirdweb-dev/react"
-import { useCallback, useEffect, useState } from "react"
+import { useAddress, useContract, useMetadata } from "@thirdweb-dev/react"
+import { useEffect, useState } from "react"
 import * as ssu from "short-scale-units"
-
-const diff = 5
+import { BigNumber } from 'ethers'
+import { truncateAddr } from "../../utils/common"
 
 let plusWorker = null
 
@@ -15,24 +15,14 @@ const MiningPage = () => {
   const address = useAddress()
   const { contract, isLoading } = useContract('0xF72b546814a88DF07C0Ee772393827cd1310FC74')
   const [miningMeta, setMiningMeta] = useState({})
+  const [isMining, setIsMining] = useState(false)
 
-  // create modal that show calculation and stop button
+  // stop mining when change page
   useEffect(() => {
-    // return () => {
-    //   plusWorker && plusWorker.terminate()
-    // }
+    return () => {
+      plusWorker && plusWorker.terminate()
+    }
   }, [])
-
-  const getData = async () => {
-    const challengeNumber = await contract.call('getChallengeNumber')
-    const miningDifficulty = await contract.call('getMiningDifficulty')
-
-    setMiningMeta({
-      miningDifficulty: `${ssu.trimNumber(miningDifficulty.toString())} ${ssu.trimName(ssu.unitNameFromNumber(miningDifficulty.toString()))} [10**${ssu.getUnitPower(miningDifficulty.toString())}]`,
-      challengeNumber: challengeNumber,
-      planetMinted: 100,
-    })
-  }
 
   useEffect(() => {
     if (!isLoading) {
@@ -40,42 +30,63 @@ const MiningPage = () => {
     }
   }, [isLoading])
 
+  const getData = async () => {
+    const challengeNumber = await contract.call('getChallengeNumber')
+    const maxTargetDifficulty = await contract.call('MAXIMUM_TARGET_DIFFICULTY')
+    const miningDifficulty = await contract.call('getMiningDifficulty')
+    const planetMinted = await contract.call('getPlanetMinted')
 
+    setMiningMeta({
+      miningDifficulty: maxTargetDifficulty.div(miningDifficulty).toString(),
+      targetDifficulty: miningDifficulty.toString(),
+      challengeNumber: challengeNumber,
+      planetMinted: planetMinted.toString(),
+    })
+  }
 
   const startMining = () => {
+    if (!address || !contract) {
+      alert('please connect wallet')
+      return
+    }
     if (plusWorker) {
       return
     }
 
     plusWorker = new Worker(new URL('../../workers/miner', import.meta.url))
 
-    plusWorker.onmessage = (event) => {
+    plusWorker.onmessage = async (event) => {
       const [digest, nonce] = event.data
-      const solution = parseInt(digest.substring(2, 2 + diff), 16)
-      if (solution != 0) {
+      if (BigNumber.from(digest).lt(BigNumber.from(miningMeta.targetDifficulty))) {
+        try {
+          const result = await contract.call('mint', [nonce, digest])
+          console.log(result)
+        } catch (err) {
+          console.log(err)
+        }
+
+        stopMining()
+      }
+      else {
         setTimeout(() => {
           mining()
         }, 0)
-      }
-      else {
-        alert(`found new block, challenge: ${123} | nonce: ${nonce}`)
-        stopMining()
       }
     }
 
     mining()
   }
 
+  const mining = () => {
+    plusWorker.postMessage([miningMeta.challengeNumber, address])
+  }
+
   const stopMining = () => {
+    setIsMining(false)
     if (plusWorker) {
       plusWorker.terminate()
       plusWorker = null
     }
-  }
-
-  const mining = () => {
-    // const digest = miner(123, address)
-    plusWorker.postMessage([123, address])
   }
 
   return (
@@ -87,29 +98,46 @@ const MiningPage = () => {
         backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.40) 0%, rgba(0, 0, 0, 0.20) 8.85%, rgba(0, 0, 0, 0.20) 82.81%, #000 100%), url(/planet-mining.jpg)`
       }}></div>
       <div className="max-w-6xl mx-auto p-4 pt-[50vh] relative">
-        <div className="flex justify-between text-center">
+        <div className="max-w-2xl flex justify-between text-center">
           <div>
-            <p className="font-bold uppercase max-w-4xl text-lg">Mining Difficulty ⓘ</p>
-            <p className="max-w-4xl text-lg">{miningMeta.miningDifficulty}</p>
+            <div className="flex items-center">
+              <p className="font-bold uppercase max-w-4xl text-lg pr-2">Mining Difficulty</p>
+              <div data-tooltip-id="g-tooltip" data-tooltip-content="Estimated number of hashes required to mine planet" className="opacity-80 text-xs cursor-pointer font-bold">ⓘ</div>
+            </div>
+            {
+              miningMeta.miningDifficulty && (
+                <p className="max-w-4xl text-lg">{`${ssu.trimNumber(miningMeta.miningDifficulty)} ${miningMeta.miningDifficulty > 10000 ? ssu.trimName(ssu.unitNameFromNumber(miningMeta.miningDifficulty)) : ''}`}</p>
+              )
+            }
           </div>
           <div>
-            <p className="max-w-4xl text-lg">Current Challenge</p>
-            <p className="max-w-4xl text-lg">{miningMeta.challengeNumber}</p>
+            <p className="font-bold uppercase max-w-4xl text-lg">Current Challenge</p>
+            <p className="max-w-4xl text-lg">{truncateAddr(miningMeta.challengeNumber || '0x', 6)}</p>
           </div>
           <div>
-            <p className="max-w-4xl text-lg">Planet Minted</p>
+            <p className="font-bold uppercase max-w-4xl text-lg">Planet Minted</p>
             <p className="max-w-4xl text-lg">{miningMeta.planetMinted}</p>
           </div>
         </div>
       </div>
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex -mx-4">
-          <div className="px-4">
-            <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => startMining()}>Start Mining</button>
-          </div>
-          <div className="px-4">
-            <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => stopMining()}>Stop Mining</button>
-          </div>
+          {
+            !isMining ? (
+              <div className="px-4">
+                <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => {
+                  startMining()
+                  setIsMining(true)
+                }}>Start Mining</button>
+              </div>
+            ) : (
+              <div className="px-4">
+                <button className="bg-white text-black px-4 py-2 font-bold text-lg" onClick={() => {
+                  stopMining()
+                }}>Stop Mining</button>
+              </div>
+            )
+          }
           <div className="px-4">
             <button className="bg-white text-black px-4 py-2 font-bold text-lg">Upgrade Rig</button>
           </div>

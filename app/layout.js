@@ -1,5 +1,6 @@
 import MiningNotification from "../components/MiningNotification"
 import Wallet from "../components/Wallet"
+import { Global } from "../components/Global"
 import { NotificationProvider } from "../components/context/NotificationContext"
 import Web3Provider from "../components/web3provider"
 import './globals.css'
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
 
         <body className={inconsolata.className}>
           {/* <Wallet /> */}
+          <Global />
           <NotificationProvider>
             <div>
               <MiningNotification />

@@ -10,7 +10,7 @@ export default function HomePlanet() {
 
   const getData = useCallback(async () => {
     try {
-      const resp = await ky.get(`http://localhost:8000/planets`, {
+      const resp = await ky.get(`${process.env.NEXT_PUBLIC_API_URL}/planets`, {
         searchParams: {
           sort: `nft_id::-1`,
           skip: 0,
@@ -46,7 +46,7 @@ export default function HomePlanet() {
         {planetList.map((planet) => {
           return (
             <div className="w-1/2 md:w-1/2 lg:w-1/4 p-4 " key={planet.nft_id}>
-              <Image className="border-2 border-gray-800 w-full" alt={`planet #${planet.nft_id}`} src={`http://localhost:8000/render/${planet.nft_id}`} width="333" height="500" />
+              <Image className="border-2 border-gray-800 w-full" alt={`planet #${planet.nft_id}`} src={`${process.env.NEXT_PUBLIC_API_URL}/render/${planet.nft_id}`} width="333" height="500" />
             </div>
           )
         })}
