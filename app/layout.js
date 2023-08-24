@@ -12,7 +12,7 @@ const inconsolata = Inconsolata({ subsets: ['latin'], display: 'swap', adjustFon
 
 export const metadata = {
   title: 'Rates Protocol',
-  description: 'On-chain game build on Base L2',
+  description: 'On-chain game build on EVM',
 }
 
 export default function RootLayout({ children }) {
